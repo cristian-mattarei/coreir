@@ -48,7 +48,7 @@ Namespace* CoreIRLoadLibrary_cgralib(Context* c) {
   cgralib->newGeneratorDecl("Const",cgralib->getTypeGen("SrcType"),widthParams,valueParams);
 
   //Reg declaration
-  cgralib->newGeneratorDecl("Reg",cgralib->getTypeGen("unary"),widthParams);
+  //cgralib->newGeneratorDecl("Reg",cgralib->getTypeGen("unary"),widthParams);
 
   //IO Declaration
   Params modeParams = {{"mode",ASTRING}};
@@ -103,17 +103,19 @@ Namespace* CoreIRLoadLibrary_cgralib(Context* c) {
     assert(bitwidth > 0);
 
     Namespace* cgralib = CoreIRLoadLibrary_cgralib(c);
+    Namespace* coreirprims = c->getNamespace("coreir");
     Generator* Mem = cgralib->getGenerator("Mem");
-    Generator* Reg = cgralib->getGenerator("Reg");
+    Generator* reg_gen = coreirprims->getGenerator("reg");
     Arg* aBitwidth = c->argInt(bitwidth);
     Arg* aImageWidth = c->argInt(image_width);
+    Arg* aTrue = c->argBool(true);
 
     // create the inital register chain
     std::string reg_prefix = "reg_";
     for (uint j = 1; j < stencil_width; ++j) {
 
       std::string reg_name = reg_prefix + "0_" + std::to_string(j);
-      def->addInstance(reg_name, Reg, {{"width",aBitwidth}});
+      def->addInstance(reg_name, reg_gen, {{"width",aBitwidth},{"en",aTrue}});
       
       // connect the input
       if (j == 1) {
@@ -143,7 +145,7 @@ Namespace* CoreIRLoadLibrary_cgralib(Context* c) {
     for (uint i = 1; i < stencil_height; ++i) {
       for (uint j = 1; j < stencil_width; ++j) {
 	std::string reg_name = reg_prefix + std::to_string(i) + "_" + std::to_string(j);
-	def->addInstance(reg_name, Reg, {{"width",aBitwidth}});
+	def->addInstance(reg_name, reg_gen, {{"width",aBitwidth},{"en",aTrue}});
 	
 	// connect the input
 	if (j == 1) {
