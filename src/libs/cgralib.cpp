@@ -47,9 +47,6 @@ Namespace* CoreIRLoadLibrary_cgralib(Context* c) {
   });
   cgralib->newGeneratorDecl("Const",cgralib->getTypeGen("SrcType"),widthParams,valueParams);
 
-  //Reg declaration
-  //cgralib->newGeneratorDecl("Reg",cgralib->getTypeGen("unary"),widthParams);
-
   //IO Declaration
   Params modeParams = {{"mode",ASTRING}};
   cgralib->newGeneratorDecl("IO",cgralib->getTypeGen("unary"),widthParams,modeParams);
